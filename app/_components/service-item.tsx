@@ -1,10 +1,11 @@
-import { BarbershopService } from "@prisma/client";
+import { Service } from "@prisma/client";
+
 import Image from "next/image";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 
 interface ServiceItemProps { 
-    service: BarbershopService 
+    service: Service 
 }
 
 const ServiceItem = ({service}: ServiceItemProps) => {
@@ -21,7 +22,7 @@ const ServiceItem = ({service}: ServiceItemProps) => {
                     />
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2 flex-1">
                 <h3 className="text-sm font-semibold">{service.name}</h3>
                 <p className="text-sm text-gray-400">{service.description}</p>
             
@@ -30,8 +31,9 @@ const ServiceItem = ({service}: ServiceItemProps) => {
                     <p className="text-sm font-bold text-primary">
                         {Intl.NumberFormat("pt", {
                             style: "currency",
-                            currency: "BRL",
-                        }).format(Number(service.price))}
+                            currency: "EUR",
+                        }).format(Number(service.price)).replace("€", "")}
+                        €
                     </p>
 
                     <Button variant="secondary" size="sm">
