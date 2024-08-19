@@ -2,5 +2,11 @@
     "*.ts?(x)": [
       "eslint --fix",
       "prettier --write"
-    ]
+    ],
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    }
   }
+  
