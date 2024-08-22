@@ -1,6 +1,8 @@
 import PhoneItem from "@/app/_components/phone-item";
 import ServiceItem from "@/app/_components/service-item";
+import SidebarSheet from "@/app/_components/sidebar-sheet";
 import { Button } from "@/app/_components/ui/button";
+import { Sheet, SheetTrigger } from "@/app/_components/ui/sheet";
 import { db } from "@/app/_lib/prisma";
 import { ChevronLeftIcon, MapPinIcon, MenuIcon, SmartphoneIcon, StarIcon } from "lucide-react";
 import Image from "next/image";
@@ -50,16 +52,15 @@ interface BarbershopsPageProps {
                   </Link>
               </Button>
 
-              <Button
-                size="icon"
-                variant="secondary"
-                className="absolute right-4 top-4"
-                asChild
-                >
-                  <Link href="/">
+              <Sheet>
+              <SheetTrigger asChild>
+                  <Button size="icon" variant="secondary"
+                className="absolute right-4 top-4">
                     <MenuIcon />
-                  </Link>
-              </Button>
+                  </Button>
+              </SheetTrigger>
+              <SidebarSheet />
+            </Sheet>
 
           </div>
 
