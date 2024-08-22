@@ -89,11 +89,12 @@ interface BarbershopsPageProps {
               ))}
             </div>
           </div>
-                
+                 
           <div className="space-y-3 p-5">
-          {barbershop.phones.map((phone) => (
-            <PhoneItem key={phone} phone={phone} />
-          
+            <h2 className="text-xs font-bold uppercase text-gray-400">Contato</h2>
+            {barbershop.phones.map((phone) => (
+              <PhoneItem key={phone} phone={phone} />
+            
           ))}
           </div>
         </div>
