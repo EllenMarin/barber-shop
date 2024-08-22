@@ -1,11 +1,12 @@
 
 import { Button } from "./ui/button";
-import { CalendarIcon, HomeIcon, LogOutIcon, MenuIcon } from "lucide-react";
+import { CalendarIcon, HomeIcon, LogInIcon, LogOutIcon, MenuIcon } from "lucide-react";
 import { SheetContent, SheetHeader, SheetTitle, SheetTrigger, Sheet, SheetClose } from "./ui/sheet";
 import { quickSearchOptions } from "../_contants/search";
 import { AvatarImage, Avatar } from "./ui/avatar";
 import Link from "next/link";
 import Image from "next/image";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 
 const SidebarSheet = () => {
     return ( 
@@ -15,17 +16,45 @@ const SidebarSheet = () => {
           <SheetTitle className="text-left">Menu</SheetTitle>
         </SheetHeader>
 
-        <div className="flex items-center gap-3 border-b border-solid py-5">
-          <Avatar>
+        <div className="flex items-center justify-between gap-3 border-b border-solid py-5">
+          <h2 className="font-bold text-lg">Ola, faça o seu login!</h2>
+          
+          <Dialog>
+            <DialogTrigger>
+              <Button size="icon">
+                <LogInIcon />
+              </Button>
+            </DialogTrigger>
+
+            <DialogContent className="w-[90%]">
+              <DialogHeader>
+                <DialogTitle>Faça seu login</DialogTitle>
+                <DialogDescription>
+                  Conecte-se com uma conta Google
+                </DialogDescription>
+              </DialogHeader>
+
+               <Button variant="outline" className="gap-2 font-bold">
+                <Image 
+                  src="/google.png" 
+                  alt="Google"
+                  width={18} 
+                  height={18}/> 
+                  Google
+               </Button>
+            </DialogContent>
+          </Dialog>
+
+          {/*<Avatar>
             <AvatarImage 
               src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8YXZhdGFyfGVufDB8fDB8fHwy"
               className="object-cover"/>
-          </Avatar>
+            </Avatar>
 
           <div>
             <p className="font-bold">Ellen Marin</p>
             <p className="text-xs">marin_elle@hotmail.com</p>
-          </div>
+          </div>*/}
         </div>
 
         <div className="flex flex-col gap-2 border-b border-solid py-5">
