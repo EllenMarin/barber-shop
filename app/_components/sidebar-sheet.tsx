@@ -1,4 +1,4 @@
-
+"use client"
 import { Button } from "./ui/button";
 import { CalendarIcon, HomeIcon, LogInIcon, LogOutIcon, MenuIcon } from "lucide-react";
 import { SheetContent, SheetHeader, SheetTitle, SheetTrigger, Sheet, SheetClose } from "./ui/sheet";
@@ -7,8 +7,13 @@ import { AvatarImage, Avatar } from "./ui/avatar";
 import Link from "next/link";
 import Image from "next/image";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 const SidebarSheet = () => {
+  const {data} = useSession()
+  const handlerLogInGoogleClick = () => signIn("google")
+  const handleLogOutClick = () => signOut()
+
     return ( 
         
       <SheetContent className="overflow-y-auto">
@@ -17,56 +22,65 @@ const SidebarSheet = () => {
         </SheetHeader>
 
         <div className="flex items-center justify-between gap-3 border-b border-solid py-5">
-          <h2 className="font-bold text-lg">Ola, faça o seu login!</h2>
           
-          <Dialog>
-            <DialogTrigger>
-              <Button size="icon">
-                <LogInIcon />
-              </Button>
-            </DialogTrigger>
 
-            <DialogContent className="w-[90%]">
-              <DialogHeader>
-                <DialogTitle>Faça seu login</DialogTitle>
-                <DialogDescription>
-                  Conecte-se com uma conta Google
-                </DialogDescription>
-              </DialogHeader>
-
-               <Button variant="outline" className="gap-2 font-bold">
-                <Image 
-                  src="/google.png" 
-                  alt="Google"
-                  width={18} 
-                  height={18}/> 
-                  Google
-               </Button>
-            </DialogContent>
-          </Dialog>
-
-          {/*<Avatar>
-            <AvatarImage 
-              src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8YXZhdGFyfGVufDB8fDB8fHwy"
-              className="object-cover"/>
+          {data?.user ? (
+            <div className="flex items-center gap-2">
+            <Avatar>
+            <AvatarImage src={data?.user?.image ?? ""}/>
             </Avatar>
 
-          <div>
-            <p className="font-bold">Ellen Marin</p>
-            <p className="text-xs">marin_elle@hotmail.com</p>
-          </div>*/}
+            <div>
+              <p className="font-bold">{data.user.name}</p>
+              <p className="text-xs">{data.user.email}</p>
+            </div>
+            </div>
+          ) : (
+            <>
+              <h2 className="font-bold text-lg">Ola, faça o seu login!</h2>
+              <Dialog>
+                <DialogTrigger>
+                  <Button size="icon">
+                    <LogInIcon />
+                  </Button>
+                </DialogTrigger>
+
+                <DialogContent className="w-[90%]">
+                  <DialogHeader>
+                    <DialogTitle>Faça seu login</DialogTitle>
+                    <DialogDescription>
+                      Conecte-se com uma conta Google
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  <Button 
+                    variant="outline" 
+                    className="gap-2 font-bold" 
+                    onClick={handlerLogInGoogleClick}>
+                    <Image 
+                      src="/google.png" 
+                      alt="Google"
+                      width={18} 
+                      height={18}/> 
+                      Google
+                  </Button>
+                </DialogContent>
+              </Dialog>
+            </>
+          )}
+
         </div>
 
         <div className="flex flex-col gap-2 border-b border-solid py-5">
           <SheetClose asChild>
-            <Button className="justify-start gap-2" asChild>
+            <Button className="justify-start gap-2 bg-transparent hover:bg-primary focus:bg-primary" variant="ghost" asChild>
               <Link href="/">
                 <HomeIcon size={18}/>
                 Inicio
               </Link>
             </Button>
           </SheetClose>
-          <Button className="justify-start gap-2" variant="ghost">
+          <Button className="justify-start gap-2 bg-transparent hover:bg-primary" variant="ghost">
             <CalendarIcon size={18}/>
             Marcações
           </Button>
@@ -76,7 +90,7 @@ const SidebarSheet = () => {
         <div className="flex flex-col gap-2 border-b border-solid py-5">
           {quickSearchOptions.map((option) => (
             <Button 
-              className="justify-start gap-2" 
+              className="justify-start gap-2 bg-transparent hover:bg-primary" 
               variant="ghost"
               key={option.title}
             >
@@ -92,7 +106,10 @@ const SidebarSheet = () => {
         </div>
 
         <div className="flex flex-col gap-2 border-b border-solid py-5">
-          <Button className="justify-start gap-2" variant="ghost">
+          <Button 
+            className="justify-start gap-2" 
+            variant="ghost" 
+            onClick={handleLogOutClick}>
             <LogOutIcon size={18}/>
             LogOut
           </Button>
