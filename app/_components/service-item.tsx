@@ -13,6 +13,8 @@ import { useSession } from "next-auth/react";
 import { createBooking } from "../_actions/create-booking";
 import { toast } from "sonner";
 import { getBookings } from "../_actions/get-bookings";
+import { Dialog, DialogContent } from "./ui/dialog";
+import SignInDialog from "./sign-in-dialog";
 
 
 interface ServiceItemProps { 
@@ -66,6 +68,8 @@ const getTimeList = (bookings: Booking[]) => {
 }
 
 const ServiceItem = ({service, barbershop}: ServiceItemProps) => {
+
+    const [signInDialogIsOpen, setSignInDialogIsOpen] = useState(false)
     const {data} = useSession()
     const [selectedDay, setSelectedDay] = useState<Date | undefined>(undefined)
     const [selectedTime, setSelectedTime] = useState<string | undefined>(undefined)
@@ -84,6 +88,13 @@ const ServiceItem = ({service, barbershop}: ServiceItemProps) => {
         }
         fetch()
     }, [selectedDay, service.id])
+
+    const handleBookingClick = () => {
+        if(data?.user) {
+            return setBookingSheetIsOpen(true)
+        }
+        return setSignInDialogIsOpen(true)
+    }
 
     const handleBookingSheetOpenChange = () => {
         setSelectedDay(undefined)
@@ -122,7 +133,8 @@ const ServiceItem = ({service, barbershop}: ServiceItemProps) => {
     }
 
     return (
-        <Card>
+        <>
+            <Card>
             <CardContent className="flex items-center gap-3 p-3">
             
             <div className="relative max-h-[110px] max-w-[110px] min-h-[110px] min-w-[110px]">
@@ -152,7 +164,10 @@ const ServiceItem = ({service, barbershop}: ServiceItemProps) => {
                         open={bookingSheetIsOpen}
                         onOpenChange={handleBookingSheetOpenChange}>
                         
-                            <Button variant="secondary" size="sm" onClick={() => setBookingSheetIsOpen(true)}>
+                            <Button 
+                                variant="secondary" 
+                                size="sm" 
+                                onClick={handleBookingClick}>
                         Marcar
                     </Button>
                         
@@ -167,7 +182,7 @@ const ServiceItem = ({service, barbershop}: ServiceItemProps) => {
                                     locale={pt}
                                     selected={selectedDay}
                                     onSelect={handleDateSelect}
-                                    fromDate={addDays(new Date(), 1)}
+                                    fromDate={new Date()}
                                     styles={{
                                         head_cell: {
                                           width: "100%",
@@ -266,6 +281,15 @@ const ServiceItem = ({service, barbershop}: ServiceItemProps) => {
         
             </CardContent>
         </Card>
+
+        <Dialog 
+            open={signInDialogIsOpen} 
+            onOpenChange={(open) => setSignInDialogIsOpen(open)}>
+            <DialogContent className="w-[90%]">
+                <SignInDialog />
+            </DialogContent>
+        </Dialog>
+    </>
     )
 }
  
