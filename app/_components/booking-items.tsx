@@ -1,3 +1,4 @@
+"use client"
 import { Booking, Prisma } from "@prisma/client";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Badge } from "./ui/badge";
@@ -5,9 +6,15 @@ import { Card, CardContent } from "./ui/card";
 import { isFuture } from "date-fns";
 import { format } from "date-fns";
 import { pt } from "date-fns/locale";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
+import { Sheet, SheetClose, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
 import Image from "next/image";
 import PhoneItem from "./phone-item";
+import { Button } from "./ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { DialogClose } from "@radix-ui/react-dialog";
+import { useState } from "react";
+import { toast } from "sonner";
+import { deleteBooking } from "../_actions/delete-booking";
 
 interface BookingItemProps {
   booking: Prisma.BookingGetPayload<{
@@ -22,10 +29,24 @@ interface BookingItemProps {
 }
 
 const BookingItem = ({booking}: BookingItemProps) => { 
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
+  
   const {service: {barbershop}} = booking
+  const handleCancelBooking = async () => {
+    try {
+      await deleteBooking(booking.id)
+      setIsSheetOpen(false)
+      toast.success("Marcação removida com sucesso!")
+    }catch(error){
+      toast.error("Erro ao cancelar marcação. Tente novamente.")
+    }
+  }
+  const handleSheetOpenChange = (isOpen: boolean) => {
+    setIsSheetOpen(isOpen)
+  }
   const isConfirmed = isFuture(booking.date)  
   return (
-    <Sheet>
+    <Sheet open={isSheetOpen} onOpenChange={handleSheetOpenChange}>
       <SheetTrigger className="w-full">
         <Card className="min-w-[90%]">
           <CardContent className="flex justify-between p-0">
@@ -57,7 +78,7 @@ const BookingItem = ({booking}: BookingItemProps) => {
         </Card>
       </SheetTrigger>
 
-      <SheetContent className="w-[90%]">
+      <SheetContent className="w-[85%]">
         <SheetHeader>
           <SheetTitle className="text-left">Informações da marcação</SheetTitle>
         </SheetHeader>
@@ -135,6 +156,42 @@ const BookingItem = ({booking}: BookingItemProps) => {
             ))}
           </div>
         </div>
+        <SheetFooter className="mt-6">
+          <div className="flex items-center gap-3">
+            <SheetClose asChild>
+              <Button variant="secondary" className="w-full">Voltar</Button>  
+            </SheetClose>
+            {isConfirmed && (
+              
+              <Dialog>
+                <DialogTrigger className="w-full">
+                  <Button variant="destructive" className="w-full">Remover marcação</Button>
+                </DialogTrigger>
+                <DialogContent className="w-[90%]">
+                  <DialogHeader>
+                    <DialogTitle>Tem certeza?</DialogTitle>
+                    <DialogDescription>
+                      Sua marcação irá ser removida permanentemente. Essa ação é irreversivel
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  <DialogFooter className="flex flex-row gap-3">
+                    <DialogClose className="w-full" asChild>
+                      <Button variant="secondary" className="w-full">Voltar</Button>
+                    </DialogClose>
+                    <DialogClose className="w-full">
+                      <Button 
+                        variant="destructive"
+                        className="w-full"
+                        onClick={handleCancelBooking}>Confirmar</Button>
+                    </DialogClose>
+                    </DialogFooter>
+                </DialogContent>
+              </Dialog>
+              
+            )}
+          </div>
+        </SheetFooter>
       </SheetContent>
     </Sheet>
   );
