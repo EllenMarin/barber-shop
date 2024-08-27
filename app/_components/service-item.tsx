@@ -7,8 +7,8 @@ import { Button } from "./ui/button";
 import { pt } from "date-fns/locale";
 import { Sheet, SheetClose, SheetContent, SheetFooter, SheetHeader, SheetTitle} from "./ui/sheet";
 import { Calendar } from "./ui/calendar";
-import { useEffect, useState } from "react";
-import { addDays, format, set } from "date-fns";
+import { useEffect, useMemo, useState } from "react";
+import { addDays, format, isPast, isToday, set } from "date-fns";
 import { useSession } from "next-auth/react";
 import { createBooking } from "../_actions/create-booking";
 import { toast } from "sonner";
@@ -49,10 +49,20 @@ const TIME_LIST = [
 
 ]
 
-const getTimeList = (bookings: Booking[]) => {
+interface GetTimeListProps {
+    bookings: Booking[]
+    selectedDay: Date
+}
+
+const getTimeList = ({bookings, selectedDay}: GetTimeListProps) => {
     return TIME_LIST.filter((time) => {
         const hour = Number(time.split(":")[0])
         const minutes = Number(time.split(":")[1])
+
+        const timeIsOnThePast = isPast(set(new Date(), {hours: hour, minutes}))
+        if(timeIsOnThePast && isToday(selectedDay)){
+            return false
+        }
 
         const hasBookingOnCurrentTime =  bookings.some(
             (booking) =>
@@ -130,6 +140,14 @@ const ServiceItem = ({service, barbershop}: ServiceItemProps) => {
             toast.error("Erro ao criar marcação")
         }
     }
+
+    const timeList = useMemo(() => {
+        if(!selectedDay) return []
+        return getTimeList({
+        bookings: dayBookings,
+        selectedDay,
+    })
+    }, [dayBookings, selectedDay])
 
     return (
         <>
@@ -210,7 +228,7 @@ const ServiceItem = ({service, barbershop}: ServiceItemProps) => {
 
                             {selectedDay && ( 
                                 <div className="flex gap-3 overflow-x-auto p-5 [&::-webkit-scrollbar]:hidden border-b border-solid">
-                                {getTimeList(dayBookings).map((time) => (
+                                {timeList.length > 0 ? timeList.map((time) => (
                                     <Button
                                     key={time}
                                     variant={selectedTime == time ? "default" : "outline"}
@@ -219,7 +237,9 @@ const ServiceItem = ({service, barbershop}: ServiceItemProps) => {
                                     >
                                     {time}
                                     </Button>
-                                ))}
+                                )) : (
+                                    <p className="text-xs">Não há horários disponíveis</p>
+                                )}
                             </div>
                             )}
 
