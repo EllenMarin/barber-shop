@@ -45,7 +45,7 @@ const SidebarSheet = () => {
                     <LogInIcon />
                   </Button>
                 </DialogTrigger>
-                
+
                 <DialogContent className="w-[90%]">
                   <SignInDialog />
                 </DialogContent>
@@ -95,7 +95,8 @@ const SidebarSheet = () => {
           ))}
         </div>
 
-        <div className="flex flex-col gap-2 border-b border-solid py-5">
+        {data?.user && (
+          <div className="flex flex-col gap-2 border-b border-solid py-5">
           <Button 
             className="justify-start gap-2" 
             variant="ghost" 
@@ -104,6 +105,7 @@ const SidebarSheet = () => {
             LogOut
           </Button>
         </div>
+        )}
 
       </SheetContent>
     );
