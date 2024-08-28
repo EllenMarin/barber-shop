@@ -5,27 +5,27 @@ interface QuickSearchOptions {
 
 export const quickSearchOptions: QuickSearchOptions[] = [
   {
-    imageUrl: "/cabelo.svg",
+    imageUrl: "/barbershop.png",
     title: "Cabelo",
   },
   {
-    imageUrl: "/barba.svg ",
+    imageUrl: "/barbershop.png ",
     title: "Barba",
   },
   {
-    imageUrl: "/acabamento.svg",
+    imageUrl: "/barbershop.png",
     title: "Acabamento",
   },
   {
-    imageUrl: "/massagem.svg",
+    imageUrl: "/barbershop.png",
     title: "Massagem",
   },
   {
-    imageUrl: "/sobrancelha",
+    imageUrl: "/barbershop.png",
     title: "Sobrancelha",
   },
   {
-    imageUrl: "/hidratacao",
+    imageUrl: "/barbershop.png",
     title: "Hidratação",
   },
 ];
