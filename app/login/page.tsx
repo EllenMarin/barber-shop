@@ -61,9 +61,9 @@ const LoginPage = () => {
 
   return (
     <div className="relative flex items-center justify-center min-h-screen bg-[url('/background.jpg')] bg-cover bg-center">
-      <div className="absolute inset-0 bg-black bg-opacity-90"></div>
+      <div className="absolute inset-0 bg-[#151619] bg-opacity-90"></div>
 
-      <div className="relative z-10 p-6 rounded-lg shadow-lg max-w-md w-[70%] bg-background">
+      <div className="relative z-10 p-6 rounded-lg shadow-lg max-w-md w-[80%] bg-background">
         <Dialog>
           <DialogHeader className="space-y-4">
             <DialogTitle className="text-center">Faça seu login</DialogTitle>
