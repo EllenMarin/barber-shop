@@ -6,77 +6,77 @@ import BookingItem from "../_components/booking-items";
 import { db } from "../_lib/prisma";
 
 const Bokings = async () => {
-    const session = await getServerSession(authOptions)
-    if(!session?.user) {
-        return notFound()
-    }
+  const session = await getServerSession(authOptions);
+  if (!session?.user) {
+    return notFound();
+  }
 
-    const confirmedBookings = await db.booking.findMany({
-        where: {
-            userId: (session.user as any).id,
-            date: {
-                gte: new Date(),
-            }
+  const confirmedBookings = await db.booking.findMany({
+    where: {
+      userId: (session.user as any).id,
+      date: {
+        gte: new Date(),
+      },
+    },
+    include: {
+      service: {
+        include: {
+          barbershop: true,
         },
-        include:{
-            service: {
-                include: {
-                    barbershop: true,
-                }
-            },
+      },
+    },
+    orderBy: {
+      date: "asc",
+    },
+  });
+  const concludedBookings = await db.booking.findMany({
+    where: {
+      userId: (session.user as any).id,
+      date: {
+        lt: new Date(),
+      },
+    },
+    include: {
+      service: {
+        include: {
+          barbershop: true,
         },
-        orderBy: {
-            date: "asc"
-          }
-    })
-    const concludedBookings = await db.booking.findMany({
-        where: {
-            userId: (session.user as any).id,
-            date: {
-                lt: new Date()
-            }
-        },
-        include:{
-            service: {
-                include: {
-                    barbershop: true,
-                }
-            },
-        },
-        orderBy: {
-            date: "asc"
-          }
-    })
+      },
+    },
+    orderBy: {
+      date: "asc",
+    },
+  });
 
-    return ( 
-        <>
-            <Header /> 
-            <div className="p-5 space-y-3 ">
-                <h1 className="text-xl font-bold">Marcações</h1>
+  return (
+    <>
+      <Header />
+      <div className="p-5 space-y-3 ">
+        <h1 className="text-xl font-bold">Marcações</h1>
 
-                {confirmedBookings.length > 0 && (
-                    <>
-                    <h2 className="mb-3 mt-6 text-sm font-bold uppercase text-gray-400">
-                    Confirmados
-                    </h2>
-                    </>
-                )}
-                {confirmedBookings.map((booking) => (
-                    <BookingItem key={booking.id} booking={booking} />
-                ))}
-                {concludedBookings.length > 0 && (
-                    <>
-                        <h2 className="mb-3 mt-6 text-sm font-bold uppercase text-gray-400">
-                        Finalizados
-                        </h2>
-                        {concludedBookings.map((booking) => (
-                            <BookingItem key={booking.id} booking={booking} />
-                        ))}
-                    </>
-                )}
-            </div>
-        </>
-     );
-}
- 
+        {confirmedBookings.length > 0 && (
+          <>
+            <h2 className="mb-3 mt-6 text-sm font-bold uppercase text-gray-400">
+              Confirmados
+            </h2>
+          </>
+        )}
+        {confirmedBookings.map((booking) => (
+          <BookingItem key={booking.id} booking={booking} />
+        ))}
+        {concludedBookings.length > 0 && (
+          <>
+            <h2 className="mb-3 mt-6 text-sm font-bold uppercase text-gray-400">
+              Finalizados
+            </h2>
+            {concludedBookings.map((booking) => (
+              <BookingItem key={booking.id} booking={booking} />
+            ))}
+          </>
+        )}
+      </div>
+    </>
+  );
+};
+
 export default Bokings;
